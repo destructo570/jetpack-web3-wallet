@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const base_url = "http://localhost:3001";
+const base_url = "https://jetpack-web3-wallet-backend.onrender.com";
 
 export const getSeedPhrase = async () => {
   try {
