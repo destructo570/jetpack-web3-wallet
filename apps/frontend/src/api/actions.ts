@@ -12,7 +12,7 @@ export const getSeedPhrase = async () => {
   }
 };
 
-export const addNewWallet = async (payload) => {
+export const addNewWallet = async (payload: {}) => {
   try {
     const response = axios.post(`${base_url}/wallet/add-wallet`, payload);
     return response;

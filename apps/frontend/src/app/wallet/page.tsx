@@ -7,7 +7,10 @@ import { addNewWallet, getSeedPhrase } from "@/api/actions";
 
 export default function page() {
   const [seed_phrase, setSeedPhrase] = useState("");
-  const [wallets, setWallets] = useState([]);
+  const [wallets, setWallets] = useState<{
+    public_key: string;
+    network: string;
+  }[]>([]);
 
   const renderPhrases = () => {
     return seed_phrase?.split(" ")?.map((word, index) => {
