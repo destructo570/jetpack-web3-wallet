@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import WalletCard from "@/components/common/WalletCard";
 import { addNewWallet, getSeedPhrase } from "@/api/actions";
 import SeedPhraseLoading from "@/components/common/SeedPhraseLoading";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Info } from "lucide-react";
 
 export default function page() {
   const [seed_phrase, setSeedPhrase] = useState("");
@@ -37,6 +39,7 @@ export default function page() {
     if (response && response?.status === 200) {
       setSeedPhrase(response?.data?.seed_phrase);
     }
+    
     setLoading(false);
   };
 
@@ -51,17 +54,36 @@ export default function page() {
     }
   };
 
+  const renderInfo = () => {
+    return (
+      <Alert className="flex items-start gap-2">
+        <div>
+          <Info className="h-4 w-4" />
+        </div>
+        <div>
+          <AlertTitle>Heads up!</AlertTitle>
+          <AlertDescription>
+            Initial request may take some time. Because of servers going to sleep due to inactivity.
+          </AlertDescription>
+        </div>
+      </Alert>
+    );
+  };
+
   return (
     <main className="flex flex-col items-center h-screen bg-background pt-36">
-      <h1 className="text-3xl font-bold mb-8">Jetpack wallet</h1>
+      <h1 className="text-3xl font-bold mb-8">Jetpack wallet 🚀</h1>
+      {renderInfo()}
       {seed_phrase || loading ? (
-        <Card className="w-full p-6 grid grid-cols-3 gap-4">
+        <Card className="w-full p-6 grid grid-cols-3 gap-4 mt-4">
           {loading ? <SeedPhraseLoading /> : renderPhrases()}
         </Card>
       ) : null}
       <div className="my-8 flex gap-4">
         <Button onClick={onGenerateClick}>Generate mnemonic</Button>
-        <Button onClick={onAddNewWallet} disabled={!seed_phrase || loading}>Add Wallet</Button>
+        <Button onClick={onAddNewWallet} disabled={!seed_phrase || loading}>
+          Add Wallet
+        </Button>
       </div>
       <div className="w-full grid grid-cols-2 gap-4">
         {wallets?.map((wallet) => {
