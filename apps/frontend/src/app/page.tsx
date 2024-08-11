@@ -61,7 +61,7 @@ export default function page() {
       ) : null}
       <div className="my-8 flex gap-4">
         <Button onClick={onGenerateClick}>Generate mnemonic</Button>
-        <Button onClick={onAddNewWallet}>Add Wallet</Button>
+        <Button onClick={onAddNewWallet} disabled={!seed_phrase || loading}>Add Wallet</Button>
       </div>
       <div className="w-full grid grid-cols-2 gap-4">
         {wallets?.map((wallet) => {
