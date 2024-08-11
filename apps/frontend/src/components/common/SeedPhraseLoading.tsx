@@ -5,7 +5,7 @@ const SeedPhraseLoading = () => {
   const renderLoader = () => {
     let element_list = [];
     for (let index = 0; index < 12; index++) {
-      element_list.push(<Skeleton width={256} height={32} />);
+      element_list.push(<Skeleton width={"100%"} height={32} />);
     }
     return element_list;
   };

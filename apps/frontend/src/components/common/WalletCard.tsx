@@ -12,7 +12,7 @@ export default function WalletCard(props: {
       <div>
         <p className="text-sm text-muted-foreground">{network}</p>
       </div>
-      <p className="text-sm">{public_key}</p>
+      <p className="text-sm truncate text-ellipsis">{public_key}</p>
     </Card>
   );
 }

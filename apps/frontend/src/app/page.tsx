@@ -74,9 +74,9 @@ export default function page() {
     <main className="flex flex-col items-center h-screen bg-background pt-36">
       <h1 className="text-3xl font-bold mb-8">Jetpack wallet 🚀</h1>
       {renderInfo()}
-      {seed_phrase || loading ? (
+      {seed_phrase || loading  || true? (
         <Card className="w-full p-6 grid grid-cols-3 gap-4 mt-4">
-          {loading ? <SeedPhraseLoading /> : renderPhrases()}
+          {loading || true? <SeedPhraseLoading /> : renderPhrases()}
         </Card>
       ) : null}
       <div className="my-8 flex gap-4">
@@ -85,7 +85,7 @@ export default function page() {
           Add Wallet
         </Button>
       </div>
-      <div className="w-full grid grid-cols-2 gap-4">
+      <div className="w-full grid sm:grid-cols-2 gap-4">
         {wallets?.map((wallet) => {
           return (
             <WalletCard
