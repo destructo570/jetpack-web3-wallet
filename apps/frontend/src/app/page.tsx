@@ -74,9 +74,9 @@ export default function page() {
     <main className="flex flex-col items-center h-screen bg-background pt-36">
       <h1 className="text-3xl font-bold mb-8">Jetpack wallet 🚀</h1>
       {renderInfo()}
-      {seed_phrase || loading  || true? (
+      {seed_phrase || loading ? (
         <Card className="w-full p-6 grid grid-cols-3 gap-4 mt-4">
-          {loading || true? <SeedPhraseLoading /> : renderPhrases()}
+          {loading ? <SeedPhraseLoading /> : renderPhrases()}
         </Card>
       ) : null}
       <div className="my-8 flex gap-4">
