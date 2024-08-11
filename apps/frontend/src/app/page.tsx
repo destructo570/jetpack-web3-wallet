@@ -4,13 +4,17 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import WalletCard from "@/components/common/WalletCard";
 import { addNewWallet, getSeedPhrase } from "@/api/actions";
+import SeedPhraseLoading from "@/components/common/SeedPhraseLoading";
 
 export default function page() {
   const [seed_phrase, setSeedPhrase] = useState("");
-  const [wallets, setWallets] = useState<{
-    public_key: string;
-    network: string;
-  }[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [wallets, setWallets] = useState<
+    {
+      public_key: string;
+      network: string;
+    }[]
+  >([]);
 
   const renderPhrases = () => {
     return seed_phrase?.split(" ")?.map((word, index) => {
@@ -28,10 +32,12 @@ export default function page() {
   };
 
   const onGenerateClick = async () => {
+    setLoading(true);
     const response = await getSeedPhrase();
     if (response && response?.status === 200) {
       setSeedPhrase(response?.data?.seed_phrase);
     }
+    setLoading(false);
   };
 
   const onAddNewWallet = async () => {
@@ -48,14 +54,15 @@ export default function page() {
   return (
     <main className="flex flex-col items-center h-screen bg-background pt-36">
       <h1 className="text-3xl font-bold mb-8">Jetpack wallet</h1>
-      {seed_phrase ? <Card className="w-full p-6 grid grid-cols-3 gap-4">
-        {renderPhrases()}
-      </Card> : null}
+      {seed_phrase || loading ? (
+        <Card className="w-full p-6 grid grid-cols-3 gap-4">
+          {loading ? <SeedPhraseLoading /> : renderPhrases()}
+        </Card>
+      ) : null}
       <div className="my-8 flex gap-4">
         <Button onClick={onGenerateClick}>Generate mnemonic</Button>
         <Button onClick={onAddNewWallet}>Add Wallet</Button>
       </div>
-      {/* <WalletCard publick_key={seed_key}/> */}
       <div className="w-full grid grid-cols-2 gap-4">
         {wallets?.map((wallet) => {
           return (
