@@ -107,7 +107,7 @@ export default function page() {
           Add Wallet
         </Button>
       </div>
-      <div className="w-full grid sm:grid-cols-2 gap-4">
+      <div className="w-full grid sm:grid-cols-2 gap-4 pb-4">
         {wallets?.map((wallet) => {
           return (
             <WalletCard
