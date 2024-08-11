@@ -7,6 +7,7 @@ import { addNewWallet, getSeedPhrase } from "@/api/actions";
 import SeedPhraseLoading from "@/components/common/SeedPhraseLoading";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Info } from "lucide-react";
+import { toast } from "sonner";
 
 export default function page() {
   const [seed_phrase, setSeedPhrase] = useState("");
@@ -39,7 +40,7 @@ export default function page() {
     if (response && response?.status === 200) {
       setSeedPhrase(response?.data?.seed_phrase);
     }
-    
+
     setLoading(false);
   };
 
@@ -54,6 +55,15 @@ export default function page() {
     }
   };
 
+  const copyMneumonicToClipboard = () => {
+    if (!seed_phrase) return;
+    navigator.clipboard.writeText(seed_phrase);
+    toast("", {
+      description: "Copied mnemonic to clipboard",
+      duration: 1000,
+    });
+  };
+
   const renderInfo = () => {
     return (
       <Alert className="flex items-start gap-2">
@@ -63,7 +73,8 @@ export default function page() {
         <div>
           <AlertTitle>Heads up!</AlertTitle>
           <AlertDescription>
-            Initial request may take some time. Because of servers going to sleep due to inactivity.
+            Initial request may take some time. Because of servers going to
+            sleep due to inactivity.
           </AlertDescription>
         </div>
       </Alert>
@@ -75,8 +86,19 @@ export default function page() {
       <h1 className="text-3xl font-bold mb-8">Jetpack wallet 🚀</h1>
       {renderInfo()}
       {seed_phrase || loading ? (
-        <Card className="w-full p-6 grid grid-cols-3 gap-4 mt-4">
+        <Card
+          className="w-full p-6  mt-4 cursor-pointer"
+          onClick={copyMneumonicToClipboard}
+        >
+          <div className="grid grid-cols-3 gap-4">
           {loading ? <SeedPhraseLoading /> : renderPhrases()}
+          </div>
+          {seed_phrase ? (
+            <div className="flex gap-2 items-center justify-center mt-4">
+              <Info className="w-4 h-4" />
+              <p className="text-sm">Click anywhere on the card to copy!</p>
+            </div>
+          ) : null}
         </Card>
       ) : null}
       <div className="my-8 flex gap-4">
