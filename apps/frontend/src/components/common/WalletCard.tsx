@@ -16,6 +16,7 @@ export default function WalletCard(props: {
       duration: 1000,
     });
   }
+  
   return (
     <Card className="py-2 px-3 rounded-lg cursor-pointer" onClick={copyAddressToClipboard}>
       <div>
