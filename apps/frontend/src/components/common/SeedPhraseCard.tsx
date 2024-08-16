@@ -74,7 +74,10 @@ const SeedPhraseCard = (props) => {
           </p>
           <Input
             disabled={is_create}
-            className="w-full bg-muted rounded-md flex items-center justify-center text-md font-medium px-2 py-1"
+            className={clsx(
+              "w-full bg-muted rounded-md flex items-center justify-center text-md font-medium px-2 py-1",
+              { "disabled:opacity-100": is_create }
+            )}
             value={seed_phrase?.[index]}
             onChange={(e) => onChange(index, e)}
             onPaste={(e) => onPaste(index, e)}
@@ -120,7 +123,7 @@ const SeedPhraseCard = (props) => {
         {is_create && !is_empty ? (
           <div className="flex gap-2 items-center justify-center mt-4">
             <Info className="w-4 h-4" />
-            <p className="text-sm">Click anywhere on the card to copy!</p>
+            <p className="text-sm">Click here to copy the seed phrase!</p>
           </div>
         ) : null}
       </Card>
@@ -149,8 +152,6 @@ const SeedPhraseCard = (props) => {
           <AlertDescription>
             Please check your all the words and try again.
           </AlertDescription>
-          {/* <div className="w-full">
-          </div> */}
         </Alert>
       ) : null}
     </div>
