@@ -26,6 +26,7 @@ const SeedPhraseCard = (props) => {
     "",
     "",
   ]);
+  
   const copyMneumonicToClipboard = () => {
     if (!seed_phrase || !is_create) return;
     navigator.clipboard.writeText(seed_phrase?.join(" "));

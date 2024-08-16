@@ -27,3 +27,14 @@ export const handleErrorResponse = (error: AxiosError) => {
       return;
   }
 };
+
+export const copyToClipboard = (
+  text = "",
+  toast_text = "Copied to clipboard"
+) => {
+  navigator.clipboard.writeText(text);
+  toast("", {
+    description: toast_text,
+    duration: 1000,
+  });
+};
