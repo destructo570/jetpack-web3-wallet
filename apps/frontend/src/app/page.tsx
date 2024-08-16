@@ -7,6 +7,7 @@ import SeedPhraseLoading from "@/components/common/SeedPhraseLoading";
 import { Info } from "lucide-react";
 import { toast } from "sonner";
 import { getEthereumWallet, getMnemonicPhrase } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 
 export default function page() {
   const [seed_phrase, setSeedPhrase] = useState("");
@@ -51,9 +52,35 @@ export default function page() {
     });
   };
 
+  const renderImportWallet = () => {
+    return (
+      <form className="flex items-center gap-2 w-full">
+        <Input
+          type="text"
+          placeholder="Enter your private key"
+          className="flex-1 rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        />
+        <Button
+          type="button"
+          className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Import wallet
+        </Button>
+      </form>
+    );
+  };
+
+  const onNextClick = () => {};
+
   return (
     <main className="flex flex-col items-center h-screen bg-background pt-36">
       <h1 className="text-3xl font-bold mb-8">Jetpack wallet 🚀</h1>
+      {seed_phrase ? null : (
+        <>
+          {renderImportWallet()} <h3 className="text-xl font-bold my-8">Or</h3>
+        </>
+      )}
+
       {seed_phrase || loading ? (
         <Card
           className="w-full p-6  mt-4 cursor-pointer"
@@ -70,11 +97,14 @@ export default function page() {
           ) : null}
         </Card>
       ) : null}
-      <div className="my-8 flex gap-4">
-        <Button onClick={onGenerateClick}>Generate mnemonic</Button>
-        <Button onClick={onAddNewWallet} disabled={!seed_phrase || loading}>
+      <div className={`flex gap-4 ${seed_phrase ? "mt-4" : ""}`}>
+        {!seed_phrase ? (
+          <Button onClick={onGenerateClick}>Create new wallet</Button>
+        ) : null}
+        {seed_phrase ? <Button onClick={onNextClick}>Next</Button> : null}
+        {/* <Button onClick={onAddNewWallet} disabled={!seed_phrase || loading}>
           Add Wallet
-        </Button>
+        </Button> */}
       </div>
       <div className="w-full grid sm:grid-cols-2 gap-4 pb-4">
         {wallets?.map((wallet) => {
