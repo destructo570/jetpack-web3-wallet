@@ -14,6 +14,7 @@ import PrimaryActions from "./PrimaryActions";
 import PortfolioSection from "./PortfolioSection";
 import CollectiblesSection from "./CollectiblesSection";
 import RecentActivitySection from "./RecentActivitySection";
+import { Bolt, Settings } from "lucide-react";
 
 export default function Component() {
   const [selected_wallet, setSelectedWallet] = useState();
@@ -22,7 +23,7 @@ export default function Component() {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="flex items-center justify-center gap-4 cursor-default">
+            <div className="flex items-center justify-center gap-4 cursor-default w-full">
               <Avatar className="h-8 w-8">
                 <AvatarImage src="/placeholder-user.jpg" alt="Avatar" />
                 <AvatarFallback>AC</AvatarFallback>
@@ -52,8 +53,13 @@ export default function Component() {
         selected_wallet={selected_wallet}
       />
       <div className="w-full">
-        <header className=" flex h-16 items-center justify-center gap-4 border-b bg-background px-4 sm:px-6">
-          {renderHeader()}
+        <header className=" flex h-16 items-center justify-center gap-4 border-b bg-background">
+          <div className="flex items-center w-full">
+            {renderHeader()}
+            <div className="hover:bg-zinc-700 p-2 rounded-lg cursor-pointer">
+              <Settings size={24} color="#A1A1A1" />
+            </div>
+          </div>
         </header>
         <main className="flex-1 p-4 sm:p-6">
           <div className="grid gap-6">
