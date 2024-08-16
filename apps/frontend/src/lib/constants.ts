@@ -9,3 +9,7 @@ export const COIN_TYPE = {
   [NETWORK.ETHEREUM]: "60",
   [NETWORK.SOLANA]: "501",
 };
+
+export const derivation_path_bitcoin = `m/44'/${COIN_TYPE[NETWORK.BITCOIN]}'/x'/0'`;
+export const derivation_path_eth = `m/44'/${COIN_TYPE[NETWORK.ETHEREUM]}'/x'/0'`;
+export const derivation_path_sol = `m/44'/${COIN_TYPE[NETWORK.SOLANA]}'/x'/0'`;

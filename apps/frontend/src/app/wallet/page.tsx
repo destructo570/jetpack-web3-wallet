@@ -140,7 +140,10 @@ export default function Component() {
   };
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
-      <WalletSideBar setSelectedWallet={setSelectedWallet} />
+      <WalletSideBar
+        setSelectedWallet={setSelectedWallet}
+        selected_wallet={selected_wallet}
+      />
       <div className="w-full">
         <header className=" flex h-16 items-center justify-center gap-4 border-b bg-background px-4 sm:px-6">
           {renderHeader()}

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Tooltip,
@@ -17,9 +17,23 @@ const WalletSideBar = (props) => {
   const { setSelectedWallet } = props;
   const [wallets, setWallets] = useState([]);
 
-  const onAddWallet = () => {
+  useEffect(() => {
+    //Generate first wallet when user lands on the page
+    if(!wallets?.length){
+      onAddWallet(true);
+    }
+  }, [wallets]);
+
+  const onAddWallet = (is_init = false) => {
     let seed_phrase = localStorage.getItem("seed_phrase");
-    setWallets((prev) => [...prev, getWallet(wallets?.length, seed_phrase)]);
+    let wallet = getWallet(wallets?.length, seed_phrase);
+    setWallets((prev) => [...prev, wallet]);
+    if (is_init) {
+      setSelectedWallet({
+        wallet_name: "Account 1",
+        data: wallet,
+      });
+    }
   };
 
   const renderWallet = (wallet, index) => {

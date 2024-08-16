@@ -26,7 +26,7 @@ const WalletTooltipInfo = (props) => {
           />
         </div>
       </div>
-      <div className="flex gap-2  justify-between">
+      {/* <div className="flex gap-2  justify-between">
         <p className="text-base">Ethereum:</p>
         <div className="max-w-[200px] flex gap-2 justify-between items-center">
           <p className="truncate text-base">{eth_public_key}</p>
@@ -53,7 +53,7 @@ const WalletTooltipInfo = (props) => {
             }}
           />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
