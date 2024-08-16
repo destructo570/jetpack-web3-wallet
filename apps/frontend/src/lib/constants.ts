@@ -1,0 +1,11 @@
+export const NETWORK = {
+  SOLANA: "SOLANA",
+  ETHEREUM: "ETHEREUM",
+  BITCOIN: "BITCOIN",
+};
+
+export const COIN_TYPE = {
+  [NETWORK.BITCOIN]: "0",
+  [NETWORK.ETHEREUM]: "60",
+  [NETWORK.SOLANA]: "501",
+};
