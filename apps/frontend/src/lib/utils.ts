@@ -1,5 +1,5 @@
 import { HDNode } from "@ethersproject/hdnode";
-import { generateMnemonic, mnemonicToSeedSync } from "bip39";
+import { generateMnemonic, mnemonicToSeedSync} from "bip39";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import {

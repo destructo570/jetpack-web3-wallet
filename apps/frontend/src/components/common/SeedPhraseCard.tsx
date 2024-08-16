@@ -1,32 +1,28 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Card } from "../ui/card";
 import { toast } from "sonner";
-import { Info } from "lucide-react";
+import { Info, InfoIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { getMnemonicPhrase } from "@/lib/utils";
 import { Input } from "../ui/input";
 import clsx from "clsx";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
+import { validateMnemonic } from "bip39";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 
 const SeedPhraseCard = (props) => {
   const { is_create = false } = props;
-  const router = useRouter()
-  const [seed_phrase, setSeedPhrase] = useState([
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-  ]);
-  
+  const router = useRouter();
+  const [isPasting, setIsPasting] = useState(false);
+  const [is_invalid, setIsInvalid] = useState(false);
+  const [seed_phrase, setSeedPhrase] = useState(Array(12).fill(""));
+  const inputRefs = useRef([]);
+
+  useEffect(() => {
+    inputRefs.current = inputRefs.current.slice(0, 12);
+  }, []);
+
   const copyMneumonicToClipboard = () => {
     if (!seed_phrase || !is_create) return;
     navigator.clipboard.writeText(seed_phrase?.join(" "));
@@ -42,18 +38,30 @@ const SeedPhraseCard = (props) => {
   };
 
   const onChange = (index, e) => {
-    setSeedPhrase((prev) => {
-      let new_item = e?.target?.value;
-      let new_list = [...prev];
-      if (index >= 0 && index < new_list.length) {
-        // Replace the item at the specified index
-        new_list[index] = new_item;
-      } else if (index === new_list.length) {
-        // If the index is exactly the array length, push the item to the end
-        new_list.push(new_item);
-      }
-      return new_list;
-    });
+    if (!isPasting) {
+      const newInputs = [...seed_phrase];
+      newInputs[index] = e.target.value;
+      setSeedPhrase(newInputs);
+    }
+  };
+
+  const onPaste = (index, e) => {
+    e?.preventDefault();
+    setIsPasting(true);
+
+    let pastedText = e.clipboardData.getData("text");
+    let words = pastedText?.split(" ");
+    if (words.length === 12) {
+      setSeedPhrase(words);
+    } else {
+      // Handle single word paste
+      const new_seed_phrase = [...seed_phrase];
+      new_seed_phrase[index] = pastedText;
+      setSeedPhrase(new_seed_phrase);
+    }
+
+    // Reset isPasting after the current execution context
+    setTimeout(() => setIsPasting(false), 0);
   };
 
   const renderPhrases2 = () => {
@@ -68,7 +76,8 @@ const SeedPhraseCard = (props) => {
             disabled={is_create}
             className="w-full bg-muted rounded-md flex items-center justify-center text-md font-medium px-2 py-1"
             value={seed_phrase?.[index]}
-            onChange={onChange.bind(null, index)}
+            onChange={(e) => onChange(index, e)}
+            onPaste={(e) => onPaste(index, e)}
           />
         </div>
       );
@@ -87,9 +96,16 @@ const SeedPhraseCard = (props) => {
   }, [seed_phrase]);
 
   const gotoWalletPage = () => {
-    localStorage.setItem("seed_phrase", seed_phrase?.join(" "));
-    router.push("/wallet");
-  }
+    const is_valid = validateMnemonic(seed_phrase?.join(" "));
+
+    if (is_valid) {
+      setIsInvalid(false);
+      localStorage.setItem("seed_phrase", seed_phrase?.join(" "));
+      router.push("/wallet");
+    } else {
+      setIsInvalid(true);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -113,7 +129,11 @@ const SeedPhraseCard = (props) => {
           <Button onClick={onGenerateClick} className="w-full">
             Create new wallet
           </Button>
-          <Button onClick={gotoWalletPage} className="w-full" disabled={is_empty}>
+          <Button
+            onClick={gotoWalletPage}
+            className="w-full"
+            disabled={is_empty}
+          >
             Proceed
           </Button>
         </div>
@@ -122,6 +142,17 @@ const SeedPhraseCard = (props) => {
           Import wallet
         </Button>
       )}
+      {is_invalid && !is_create ? (
+        <Alert>
+          <InfoIcon className="h-4 w-4" />
+          <AlertTitle>Invalid Seed Phrase Detected!</AlertTitle>
+          <AlertDescription>
+            Please check your all the words and try again.
+          </AlertDescription>
+          {/* <div className="w-full">
+          </div> */}
+        </Alert>
+      ) : null}
     </div>
   );
 };

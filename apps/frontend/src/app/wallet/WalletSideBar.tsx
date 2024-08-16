@@ -19,7 +19,7 @@ const WalletSideBar = (props) => {
 
   useEffect(() => {
     //Generate first wallet when user lands on the page
-    if(!wallets?.length){
+    if (!wallets?.length) {
       onAddWallet(true);
     }
   }, [wallets]);
@@ -41,7 +41,7 @@ const WalletSideBar = (props) => {
 
     return (
       <div
-        className="flex items-center gap-2 justify-between rounded-lg bg-muted px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer"
+        className="flex items-center gap-2 justify-between rounded-lg bg-muted hover:bg-zinc-700 px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer"
         onClick={() =>
           setSelectedWallet({
             wallet_name,
@@ -50,9 +50,9 @@ const WalletSideBar = (props) => {
         }
       >
         <div className="flex items-center gap-2">
-          <Avatar className="h-8 w-8 border ">
+          <Avatar className="h-8 w-8 ">
             <AvatarImage src="/placeholder-user.jpg" alt="Wallet" />
-            <AvatarFallback className="bg-zinc-200">A</AvatarFallback>
+            <AvatarFallback className="bg-zinc-600 hover:bg-zinc-700 text-zinc-300">A</AvatarFallback>
           </Avatar>
           <div>
             <p className="text-md font-bold">{wallet_name}</p>
