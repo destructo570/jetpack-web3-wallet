@@ -38,11 +38,6 @@ export default function page() {
     setSeedPhrase(getMnemonicPhrase());
   };
 
-  const onAddNewWallet = async () => {
-    const wallet = getEthereumWallet(wallets?.length, seed_phrase);
-    setWallets((prev) => [...prev, wallet]);
-  };
-
   const copyMneumonicToClipboard = () => {
     if (!seed_phrase) return;
     navigator.clipboard.writeText(seed_phrase);
@@ -102,9 +97,6 @@ export default function page() {
           <Button onClick={onGenerateClick}>Create new wallet</Button>
         ) : null}
         {seed_phrase ? <Button onClick={onNextClick}>Next</Button> : null}
-        {/* <Button onClick={onAddNewWallet} disabled={!seed_phrase || loading}>
-          Add Wallet
-        </Button> */}
       </div>
       <div className="w-full grid sm:grid-cols-2 gap-4 pb-4">
         {wallets?.map((wallet) => {
