@@ -1,7 +1,7 @@
 "use client";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import WalletSideBar from "./WalletSideBar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -14,11 +14,53 @@ import PrimaryActions from "./PrimaryActions";
 import PortfolioSection from "./PortfolioSection";
 import CollectiblesSection from "./CollectiblesSection";
 import RecentActivitySection from "./RecentActivitySection";
-import { Bolt, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import { JetPackWallet } from "@/model/JetPackWallet";
+import { clusterApiUrl, Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import SkeletonLoader from "@/components/common/SkeletonLoader";
+import { ethers, formatUnits } from "ethers";
 
 export default function Component() {
   const [selected_wallet, setSelectedWallet] = useState<JetPackWallet>();
+  const [loading, setLoading] = useState(false);
+  const [wallet_data, setWalletData] = useState({
+    sol_balance: 0,
+    eth_balance: 0,
+  });
+
+  useEffect(() => {
+    if (selected_wallet?.solana_wallet) {
+      fetchWalletBalance();
+      fetchEthWalletBalance();
+    }
+  }, [selected_wallet]);
+
+  const fetchWalletBalance = async () => {
+    setLoading(true);
+    const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+    const walletBalance = await connection.getBalance(
+      selected_wallet?.getSolanaWallet()?.getPublicKeyObj()!
+    );
+    setWalletData((prev) => ({
+      ...prev,
+      sol_balance: walletBalance / LAMPORTS_PER_SOL,
+    }));
+    setLoading(false);
+  };
+  
+  const fetchEthWalletBalance = async () => {
+    setLoading(true);
+    let provider = ethers.getDefaultProvider();
+    const balance = await provider.getBalance(
+      selected_wallet?.getEthereumWallet()?.getPublicKey()
+    );
+    setWalletData((prev) => ({
+      ...prev,
+      eth_balance: formatUnits(balance),
+    }));
+    setLoading(false);
+  };
+
   const renderHeader = () => {
     return (
       <TooltipProvider>
@@ -65,7 +107,11 @@ export default function Component() {
         <main className="flex-1 p-4 sm:p-6">
           <div className="grid gap-6">
             <div className="py-6 flex justify-center items-center">
-              <p className="text-5xl font-bold ">$ 24.45</p>
+              {loading ? (
+                <SkeletonLoader height={48} width={200} />
+              ) : (
+                <p className="text-5xl font-bold ">$ 0.0</p>
+              )}
             </div>
             <div className="grid">
               <PrimaryActions />
@@ -78,7 +124,11 @@ export default function Component() {
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="portfolio" className="mt-6">
-                  <PortfolioSection />
+                  <PortfolioSection
+                    loading={loading}
+                    sol_value={wallet_data?.sol_balance}
+                    eth_value={wallet_data?.eth_balance}
+                  />
                 </TabsContent>
                 <TabsContent value="collectibles" className="mt-6">
                   <CollectiblesSection />

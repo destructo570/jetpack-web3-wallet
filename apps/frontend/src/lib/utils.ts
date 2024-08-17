@@ -37,7 +37,7 @@ const getSolanaWallet = (wallet_index: number, mnemonic: string) => {
   const secret = nacl.sign.keyPair.fromSeed(derivedSeed).secretKey;
   const keyPair = Keypair.fromSecretKey(secret);
   
-  return new Wallet(wallet_index, keyPair.publicKey.toBase58(), NETWORK.SOLANA);
+  return new Wallet(wallet_index, keyPair.publicKey.toBase58(), NETWORK.SOLANA, keyPair.publicKey);
 };
 
 const getEthWallet = (wallet_index: number, mnemonic: string) => {
@@ -47,7 +47,7 @@ const getEthWallet = (wallet_index: number, mnemonic: string) => {
   const child = hdNode.derivePath(path);
   const privateKey = child.privateKey;
   const wallet = new EthWallet(privateKey);
-
+    
   return new Wallet(wallet_index, wallet.address, NETWORK.ETHEREUM);
 };
 
