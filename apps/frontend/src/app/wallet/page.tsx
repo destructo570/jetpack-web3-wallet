@@ -23,6 +23,7 @@ import { ethers, formatUnits } from "ethers";
 export default function Component() {
   const [selected_wallet, setSelectedWallet] = useState<JetPackWallet>();
   const [loading, setLoading] = useState(false);
+  const [loading_eth, setLoadingEth] = useState(false);
   const [wallet_data, setWalletData] = useState({
     sol_balance: 0,
     eth_balance: 0,
@@ -49,8 +50,8 @@ export default function Component() {
   };
   
   const fetchEthWalletBalance = async () => {
-    setLoading(true);
-    let provider = ethers.getDefaultProvider();
+    setLoadingEth(true);
+    let provider = ethers.getDefaultProvider("sepolia");
     const balance = await provider.getBalance(
       selected_wallet?.getEthereumWallet()?.getPublicKey()
     );
@@ -58,7 +59,7 @@ export default function Component() {
       ...prev,
       eth_balance: formatUnits(balance),
     }));
-    setLoading(false);
+    setLoadingEth(false);
   };
 
   const renderHeader = () => {
@@ -125,7 +126,7 @@ export default function Component() {
                 </TabsList>
                 <TabsContent value="portfolio" className="mt-6">
                   <PortfolioSection
-                    loading={loading}
+                    loading={loading || loading_eth}
                     sol_value={wallet_data?.sol_balance}
                     eth_value={wallet_data?.eth_balance}
                   />
