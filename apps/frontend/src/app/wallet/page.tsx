@@ -15,9 +15,10 @@ import PortfolioSection from "./PortfolioSection";
 import CollectiblesSection from "./CollectiblesSection";
 import RecentActivitySection from "./RecentActivitySection";
 import { Bolt, Settings } from "lucide-react";
+import { JetPackWallet } from "@/model/JetPackWallet";
 
 export default function Component() {
-  const [selected_wallet, setSelectedWallet] = useState();
+  const [selected_wallet, setSelectedWallet] = useState<JetPackWallet>();
   const renderHeader = () => {
     return (
       <TooltipProvider>
@@ -39,7 +40,7 @@ export default function Component() {
             align="center"
             sideOffset={8}
           >
-            <WalletTooltipInfo wallet={selected_wallet?.data} />
+            <WalletTooltipInfo wallet={selected_wallet} />
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

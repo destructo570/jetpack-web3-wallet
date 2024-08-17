@@ -25,28 +25,20 @@ const WalletSideBar = (props) => {
   }, [wallets]);
 
   const onAddWallet = (is_init = false) => {
-    let seed_phrase = localStorage.getItem("seed_phrase");
+    let seed_phrase = localStorage.getItem("seed_phrase") || "";
     let wallet = getWallet(wallets?.length, seed_phrase);
     setWallets((prev) => [...prev, wallet]);
     if (is_init) {
-      setSelectedWallet({
-        wallet_name: "Account 1",
-        data: wallet,
-      });
+      setSelectedWallet(wallet);
     }
   };
 
-  const renderWallet = (wallet, index) => {
-    let wallet_name = `Account ${index + 1}`;
-
+  const renderWallet = (wallet, index) => {    
     return (
       <div
         className="flex items-center gap-2 justify-between rounded-lg bg-muted hover:bg-zinc-700 px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer"
         onClick={() =>
-          setSelectedWallet({
-            wallet_name,
-            data: wallet,
-          })
+          setSelectedWallet(wallet)
         }
       >
         <div className="flex items-center gap-2">
@@ -55,7 +47,7 @@ const WalletSideBar = (props) => {
             <AvatarFallback className="bg-zinc-600 hover:bg-zinc-700 text-zinc-300">A</AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-md font-bold">{wallet_name}</p>
+            <p className="text-md font-bold">{wallet?.getWalletName()}</p>
           </div>
         </div>
         <ChevronRight size={16} />

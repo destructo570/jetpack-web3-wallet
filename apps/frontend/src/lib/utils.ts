@@ -1,17 +1,14 @@
 import { HDNode } from "@ethersproject/hdnode";
-import { generateMnemonic, mnemonicToSeedSync} from "bip39";
+import { generateMnemonic, mnemonicToSeedSync } from "bip39";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import {
-  // COIN_TYPE,
-  // derivation_path_bitcoin,
-  // derivation_path_eth,
-  derivation_path_sol,
-  NETWORK,
-} from "./constants";
+import { derivation_path_eth, derivation_path_sol, NETWORK } from "./constants";
 import nacl from "tweetnacl";
 import { derivePath } from "ed25519-hd-key";
 import { Keypair } from "@solana/web3.js";
+import { Wallet } from "@/model/Wallet";
+import { encodeBase58, Wallet as EthWallet, HDNodeWallet } from "ethers";
+import { JetPackWallet } from "@/model/JetPackWallet";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -33,42 +30,52 @@ export const getEthereumWallet = (wallet_index: number, mnemonic: string) => {
   return wallet;
 };
 
-export const getWallet = (wallet_index: number, mnemonic: string) => {
+const getSolanaWallet = (wallet_index: number, mnemonic: string) => {
   const seed = mnemonicToSeedSync(mnemonic);
-
-  const derivedSeedSol = derivePath(
-    derivation_path_sol?.replace("x", `${wallet_index}`),
-    seed.toString("hex")
-  ).key;
-  // const derivedSeedBtc = derivePath(
-  //   derivation_path_bitcoin?.replace("x", `${wallet_index}`),
-  //   seed.toString("hex")
-  // ).key;
-  // const derivedSeedEth = derivePath(
-  //   derivation_path_eth?.replace("x", `${wallet_index}`),
-  //   seed.toString("hex")
-  // ).key;
-
-  const secret_sol = nacl.sign.keyPair.fromSeed(derivedSeedSol).secretKey;
-  // const secret_btc = nacl.sign.keyPair.fromSeed(derivedSeedBtc).secretKey;
-  // const secret_eth = nacl.sign.keyPair.fromSeed(derivedSeedEth).secretKey;
-
-  const wallet = {
-    [NETWORK.SOLANA]: {
-      publicKey: Keypair.fromSecretKey(secret_sol)
-        .publicKey.toBase58()
-        .toString(),
-      privateKey: Keypair.fromSecretKey(secret_sol).secretKey,
-    },
-    // [NETWORK.BITCOIN]: {
-    //   publicKey: Keypair.fromSecretKey(secret_btc).publicKey.toString(),
-    //   privateKey: Keypair.fromSecretKey(secret_btc).secretKey,
-    // },
-    // [NETWORK.ETHEREUM]: {
-    //   publicKey: Keypair.fromSecretKey(secret_eth).publicKey.toString(),
-    //   privateKey: Keypair.fromSecretKey(secret_eth).secretKey,
-    // },
-  };
-
-  return wallet;
+  const path = derivation_path_sol?.replace("x", `${wallet_index}`);
+  const derivedSeed = derivePath(path, seed.toString("hex")).key;
+  const secret = nacl.sign.keyPair.fromSeed(derivedSeed).secretKey;
+  const keyPair = Keypair.fromSecretKey(secret);
+  
+  return new Wallet(wallet_index, keyPair.publicKey.toBase58(), NETWORK.SOLANA);
 };
+
+const getEthWallet = (wallet_index: number, mnemonic: string) => {
+  const seed = mnemonicToSeedSync(mnemonic);
+  const path = derivation_path_eth?.replace("x", `${wallet_index}`);
+  const hdNode = HDNodeWallet.fromSeed(seed);
+  const child = hdNode.derivePath(path);
+  const privateKey = child.privateKey;
+  const wallet = new EthWallet(privateKey);
+
+  return new Wallet(wallet_index, wallet.address, NETWORK.ETHEREUM);
+};
+
+export const getWallet = (wallet_index: number, mnemonic: string) => {
+  let sol_wallet = getSolanaWallet(wallet_index, mnemonic);
+  let eth_wallet = getEthWallet(wallet_index, mnemonic);
+  let new_jetpack_wallet = new JetPackWallet(
+    `Account ${wallet_index + 1}`,
+    sol_wallet,
+    eth_wallet
+  );
+  return new_jetpack_wallet;
+};
+
+export const deriveSolanaPrivateKey = (wallet_index:string, mnemonic: string) => {
+  const seed = mnemonicToSeedSync(mnemonic);
+  const path = derivation_path_sol?.replace("x", `${wallet_index}`);
+  const derivedSeed = derivePath(path, seed.toString("hex")).key;
+  const secret = nacl.sign.keyPair.fromSeed(derivedSeed).secretKey;
+  const keyPair = Keypair.fromSecretKey(secret);  
+  return encodeBase58(keyPair.secretKey);
+}
+
+export const deriveEthereumPrivateKey = (wallet_index:string, mnemonic: string) => {
+  const seed = mnemonicToSeedSync(mnemonic);
+  const hdNode = HDNodeWallet.fromSeed(seed);
+  const path = derivation_path_eth?.replace("x", `${wallet_index}`);
+  const child = hdNode.derivePath(path);
+  
+  return child.privateKey;
+}
