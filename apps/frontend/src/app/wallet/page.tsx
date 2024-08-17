@@ -71,6 +71,10 @@ export default function Component() {
     setLoadingEth(false);
   };
 
+  const onSendToken = () => {
+    fetchWalletBalance();
+  }
+
   const renderHeader = () => {
     return (
       <TooltipProvider>
@@ -139,7 +143,7 @@ export default function Component() {
               )}
             </div>
             <div className="grid">
-              <PrimaryActions />
+              <PrimaryActions wallet={selected_wallet} onSendToken={onSendToken}/>
               <Tabs defaultValue="portfolio" className="w-full pt-12 pb-4">
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
