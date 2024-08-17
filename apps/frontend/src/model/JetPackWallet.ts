@@ -24,6 +24,10 @@ export class JetPackWallet {
     return this.solana_wallet;
   }
 
+  getSolanaWalletPrivateKey(seed: string) {
+    return this.solana_wallet.getPrivateKeyFromSeed(seed);
+  }
+
   getSolanaPublicKey() {
     return this.solana_wallet?.getPublicKey();
   }
@@ -35,5 +39,9 @@ export class JetPackWallet {
 
   getEthereumWallet() {
     return this.ethereum_wallet;
+  }
+
+  getEthereumWalletPrivateKey(seed: string) {
+    return this.ethereum_wallet.getPrivateKeyFromSeed(seed);
   }
 }

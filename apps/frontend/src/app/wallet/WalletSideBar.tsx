@@ -14,8 +14,7 @@ import { getWallet } from "@/lib/utils";
 import WalletTooltipInfo from "./WalletTooltipInfo";
 
 const WalletSideBar = (props) => {
-  const { setSelectedWallet } = props;
-  const [wallets, setWallets] = useState([]);
+  const { setSelectedWallet, wallets, setWallets } = props;
 
   useEffect(() => {
     //Generate first wallet when user lands on the page

@@ -19,9 +19,18 @@ import { JetPackWallet } from "@/model/JetPackWallet";
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import SkeletonLoader from "@/components/common/SkeletonLoader";
 import { ethers, formatUnits } from "ethers";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import SettingsDialog from "@/components/Settings/SettingsDialog";
 
 export default function Component() {
   const [selected_wallet, setSelectedWallet] = useState<JetPackWallet>();
+  const [wallets, setWallets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loading_eth, setLoadingEth] = useState(false);
   const [wallet_data, setWalletData] = useState({
@@ -48,7 +57,7 @@ export default function Component() {
     }));
     setLoading(false);
   };
-  
+
   const fetchEthWalletBalance = async () => {
     setLoadingEth(true);
     let provider = ethers.getDefaultProvider("sepolia");
@@ -90,20 +99,35 @@ export default function Component() {
     );
   };
 
+  const renderSettings = () => {
+    return (
+      <Dialog>
+        <DialogTrigger asChild>
+          <div className="hover:bg-zinc-700 p-2 rounded-lg cursor-pointer">
+            <Settings size={24} color="#A1A1A1" />
+          </div>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Settings</DialogTitle>
+          </DialogHeader>
+          <SettingsDialog wallets={wallets}/>
+        </DialogContent>
+      </Dialog>
+    );
+  };
+
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
       <WalletSideBar
         setSelectedWallet={setSelectedWallet}
         selected_wallet={selected_wallet}
+        wallets={wallets}
+        setWallets={setWallets}
       />
       <div className="w-full">
         <header className=" flex h-16 items-center justify-center gap-4 border-b bg-background">
-          <div className="flex items-center w-full">
-            {renderHeader()}
-            <div className="hover:bg-zinc-700 p-2 rounded-lg cursor-pointer">
-              <Settings size={24} color="#A1A1A1" />
-            </div>
-          </div>
+          <div className="flex items-center w-full">{renderHeader()}{renderSettings()}</div>
         </header>
         <main className="flex-1 p-4 sm:p-6">
           <div className="grid gap-6">
