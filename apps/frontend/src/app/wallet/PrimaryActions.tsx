@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeftRight, DollarSign, Plus, Send } from "lucide-react";
+import { ArrowLeftRight, DollarSign, Download, Plus, Send } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -9,19 +9,24 @@ import {
 } from "@/components/ui/dialog";
 import React from "react";
 import SendTokenPage from "@/components/SendTokenPage/SendTokenPage";
+import Airdrop from "@/components/AirdropSolPage/Airdrop";
 
 const PrimaryActions = (props) => {
-  const {wallet, onSendToken} = props;
+  const { wallet, fetchWalletBalance } = props;
   const [open, setOpen] = React.useState({
     send_dialog: false,
     receive_dialog: false,
     swap_dialog: false,
-    buy_dialog: false,
+    airdrop_dialog: false,
   });
 
   const renderActionDialog = (header, component, page, key) => {
     return (
-      <Dialog open={open?.[key]} onOpenChange={(val) => setOpen(prev => ({...prev, [key]:val}))}>
+      <Dialog
+        open={open?.[key]}
+        onOpenChange={(val) => setOpen((prev) => ({ ...prev, [key]: val }))}
+        dialog
+      >
         <DialogTrigger asChild>{component}</DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -34,8 +39,8 @@ const PrimaryActions = (props) => {
   };
 
   const closeDialog = (key) => {
-    setOpen(prev => ({...prev, [key]:false}))
-  }
+    setOpen((prev) => ({ ...prev, [key]: false }));
+  };
 
   return (
     <div className="flex items-center justify-between gap-4">
@@ -62,7 +67,11 @@ const PrimaryActions = (props) => {
           <Send className="h-6 w-6" color="#A1A1A1" />
           <p className="text-xs">Send</p>
         </Button>,
-        <SendTokenPage wallet={wallet} onSendToken={onSendToken} closeDialog={closeDialog.bind(null, "send_dialog")}/>,
+        <SendTokenPage
+          wallet={wallet}
+          onSendToken={fetchWalletBalance}
+          closeDialog={closeDialog.bind(null, "send_dialog")}
+        />,
         "send_dialog"
       )}
       {renderActionDialog(
@@ -79,17 +88,20 @@ const PrimaryActions = (props) => {
         "swap_dialog"
       )}
       {renderActionDialog(
-        "Buy",
+        "Airdrop tokens on testnet",
         <Button
           variant="ghost"
           size="icon"
           className="h-16 w-full rounded-xl bg-muted hover:bg-zinc-700 transition flex flex-col gap-2"
         >
-          <DollarSign className="h-6 w-6" color="#A1A1A1" />
-          <p className="text-xs">Buy</p>
+          <Download className="h-6 w-6" color="#A1A1A1" />
+          <p className="text-xs">Airdrop</p>
         </Button>,
-        <></>,
-        "buy_dialog"
+        <Airdrop
+          onAirdrop={fetchWalletBalance}
+          closeDialog={closeDialog.bind(null, "airdrop_dialog")}
+        />,
+        "airdrop_dialog"
       )}
     </div>
   );
