@@ -1,15 +1,18 @@
 {
   "name": "my-app",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx --watch src/index.ts",
     "build": "tsc",
-    "start": "node --es-module-specifier-resolution=node dist/index.js"
+    "start": "node --env-file=.env --es-module-specifier-resolution=node dist/index.js"
   },
   "type": "module",
   "dependencies": {
     "@hono/node-server": "^1.12.0",
+    "axios": "^1.7.4",
+    "dotenv": "^16.4.5",
     "hono": "^4.5.4",
-    "hono-rate-limiter": "^0.4.0"
+    "hono-rate-limiter": "^0.4.0",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
