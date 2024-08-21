@@ -14,6 +14,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const inDevEnvironment = !!process && process.env.NODE_ENV === 'development';
+
 export const getMnemonicPhrase = () => {
   return generateMnemonic();
 };

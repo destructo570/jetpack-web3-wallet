@@ -16,9 +16,9 @@ import CollectiblesSection from "./CollectiblesSection";
 import RecentActivitySection from "./RecentActivitySection";
 import { Settings } from "lucide-react";
 import { JetPackWallet } from "@/model/JetPackWallet";
-import { clusterApiUrl, Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import SkeletonLoader from "@/components/common/SkeletonLoader";
-import { ethers, formatUnits } from "ethers";
+import { formatUnits } from "ethers";
 import {
   Dialog,
   DialogContent,
@@ -27,6 +27,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import SettingsDialog from "@/components/Settings/SettingsDialog";
+import { getEthBalance, getSolanaBalance } from "../api/actions";
 
 export default function Component() {
   const [selected_wallet, setSelectedWallet] = useState<JetPackWallet>();
@@ -47,26 +48,22 @@ export default function Component() {
 
   const fetchWalletBalance = async () => {
     setLoading(true);
-    const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-    const walletBalance = await connection.getBalance(
-      selected_wallet?.getSolanaWallet()?.getPublicKeyObj()!
-    );
+    let public_key = selected_wallet?.getSolanaWallet()?.getPublicKey();
+    const res = await getSolanaBalance({ public_key, network_type: "devnet" });
     setWalletData((prev) => ({
       ...prev,
-      sol_balance: walletBalance / LAMPORTS_PER_SOL,
+      sol_balance: res?.data?.value / LAMPORTS_PER_SOL,
     }));
     setLoading(false);
   };
 
   const fetchEthWalletBalance = async () => {
     setLoadingEth(true);
-    let provider = ethers.getDefaultProvider("sepolia");
-    const balance = await provider.getBalance(
-      selected_wallet?.getEthereumWallet()?.getPublicKey()
-    );
+    let public_key = selected_wallet?.getEthereumWallet()?.getPublicKey();
+    const res = await getEthBalance({ public_key, network_type: "sepolia"  });
     setWalletData((prev) => ({
       ...prev,
-      eth_balance: formatUnits(balance),
+      eth_balance: formatUnits(BigInt(res?.data?.result || 0).toString()),
     }));
     setLoadingEth(false);
   };
@@ -111,7 +108,7 @@ export default function Component() {
           <DialogHeader>
             <DialogTitle>Settings</DialogTitle>
           </DialogHeader>
-          <SettingsDialog wallets={wallets}/>
+          <SettingsDialog wallets={wallets} />
         </DialogContent>
       </Dialog>
     );
@@ -127,7 +124,10 @@ export default function Component() {
       />
       <div className="w-full">
         <header className=" flex h-16 items-center justify-center gap-4 border-b bg-background">
-          <div className="flex items-center w-full">{renderHeader()}{renderSettings()}</div>
+          <div className="flex items-center w-full">
+            {renderHeader()}
+            {renderSettings()}
+          </div>
         </header>
         <main className="flex-1 p-4 sm:p-6">
           <div className="grid gap-6">
@@ -139,7 +139,10 @@ export default function Component() {
               )}
             </div>
             <div className="grid">
-              <PrimaryActions wallet={selected_wallet} fetchWalletBalance={fetchWalletBalance}/>
+              <PrimaryActions
+                wallet={selected_wallet}
+                fetchWalletBalance={fetchWalletBalance}
+              />
               <Tabs defaultValue="portfolio" className="w-full pt-12 pb-4">
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
