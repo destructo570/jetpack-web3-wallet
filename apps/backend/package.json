@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "tsx --watch src/index.ts",
     "build": "tsc",
-    "start": "node --env-file=.env --es-module-specifier-resolution=node dist/index.js"
+    "start": "node --es-module-specifier-resolution=node dist/index.js"
   },
   "type": "module",
   "dependencies": {
