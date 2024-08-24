@@ -8,12 +8,12 @@ const walletRoutes = new Hono();
 walletRoutes.post("/get-eth-balance", async (c) => {
   const { ALCHEMY_KEY } = env<{ ALCHEMY_KEY: string }>(c);
   try {
-    const { publicKey, network_type } = (await c.req.json()) || {};
+    const { public_key, network_type } = (await c.req.json()) || {};
     let payload = {
       id: 1,
       jsonrpc: "2.0",
       method: "eth_getBalance",
-      params: [publicKey, "latest"],
+      params: [public_key, "latest"],
     };
 
     let url = getEthUrl(ALCHEMY_KEY, network_type);
@@ -29,12 +29,12 @@ walletRoutes.post("/get-eth-balance", async (c) => {
 walletRoutes.post("/get-sol-balance", async (c) => {
   const { ALCHEMY_KEY } = env<{ ALCHEMY_KEY: string }>(c);
   try {
-    const { publicKey, network_type } = (await c.req.json()) || {};
+    const { public_key, network_type } = (await c.req.json()) || {};
     let payload = {
       jsonrpc: "2.0",
       id: 1,
       method: "getBalance",
-      params: [publicKey],
+      params: [public_key],
     };
 
     let url = getSolanaUrl(ALCHEMY_KEY, network_type);
