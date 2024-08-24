@@ -168,7 +168,7 @@ export default function Component() {
                   />
                 </TabsContent>
                 <TabsContent value="collectibles" className="mt-6">
-                  <CollectiblesSection />
+                  <CollectiblesSection wallet={selected_wallet}/>
                 </TabsContent>
                 <TabsContent value="recent_activity" className="mt-6">
                   <RecentActivitySection />

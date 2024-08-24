@@ -99,3 +99,20 @@ export const getSolanaBalance = async (payload: GetBalancePayload) => {
     });
   }
 };
+
+export const getSolanaNftsOwned = async (
+  public_key: string,
+  page: number = 1,
+  size: number = 18
+) => {
+  try {
+    let url = `${BASE_URL}/wallet/get-sol-nfts`;
+
+    const response = await axios.get(url, { params: { public_key } });
+    return response;
+  } catch (err) {
+    return new Response(JSON.stringify(err), {
+      status: 500,
+    });
+  }
+};

@@ -48,8 +48,8 @@ export class JetPackWallet {
   }
 
   
-  static convertLamportsToSol(value: string | number | bigint){
-    return BigInt(value) / BigInt(LAMPORTS_PER_SOL);
+  static convertLamportsToSol(value: number){
+    return value / LAMPORTS_PER_SOL;
   }
 
   static convertHexToEth(value: string | number | bigint){
