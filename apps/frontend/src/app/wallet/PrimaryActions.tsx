@@ -10,6 +10,7 @@ import {
 import React from "react";
 import SendTokenPage from "@/components/SendTokenPage/SendTokenPage";
 import Airdrop from "@/components/AirdropSolPage/Airdrop";
+import ReceivePage from "@/components/ReceivePage/ReceivePage";
 
 const PrimaryActions = (props) => {
   const { wallet, fetchWalletBalance } = props;
@@ -25,7 +26,6 @@ const PrimaryActions = (props) => {
       <Dialog
         open={open?.[key]}
         onOpenChange={(val) => setOpen((prev) => ({ ...prev, [key]: val }))}
-        dialog
       >
         <DialogTrigger asChild>{component}</DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
@@ -54,7 +54,7 @@ const PrimaryActions = (props) => {
           <Plus className="h-6 w-6" color="#A1A1A1" />
           <p className="text-xs">Receive</p>
         </Button>,
-        <></>,
+        <ReceivePage wallet={wallet}/>,
         "receive_dialog"
       )}
       {renderActionDialog(
