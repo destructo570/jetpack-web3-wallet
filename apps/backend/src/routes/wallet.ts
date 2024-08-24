@@ -46,4 +46,31 @@ walletRoutes.post("/get-sol-balance", async (c) => {
   }
 });
 
+walletRoutes.get("/get-sol-nfts", async (c) => {
+  const { SHYFT_API_KEY } = env<{ SHYFT_API_KEY: string }>(c);
+  try {
+    const { public_key, page, size} = c.req.query();
+    let url = `https://api.shyft.to/sol/v2/nft/read_all`;
+    
+    let payload = {
+      params: {
+        network: "mainnet-beta",
+        address: public_key,
+        page,
+        size
+      },
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": SHYFT_API_KEY,
+      },
+    }
+    const response = await axios.get(url, payload);
+    
+    return c.json(response?.data?.result);
+  } catch (err) {
+    c.status(500);
+    return c.text("Internal server error");
+  }
+});
+
 export default walletRoutes;
