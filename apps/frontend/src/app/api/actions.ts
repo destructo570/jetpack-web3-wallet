@@ -1,3 +1,4 @@
+import { BACKEND_URL_DEV, BACKEND_URL_PROD } from "@/lib/constants";
 import { renderErrorToast } from "@/lib/helpers";
 import { inDevEnvironment } from "@/lib/utils";
 import {
@@ -13,7 +14,7 @@ import {
 import axios from "axios";
 import bs58 from "bs58";
 
-const BASE_URL = inDevEnvironment ? "http://localhost:3001" : "https://jetpack-web3-wallet-backend.onrender.com";
+const BASE_URL = inDevEnvironment ? BACKEND_URL_DEV : BACKEND_URL_PROD;
 
 export async function sendSolanaToken(
   sender_private_key: string,
@@ -42,7 +43,10 @@ export async function sendSolanaToken(
   }
 }
 
-export async function requestAirdrop(receiver_public_key: string, amount:number) {
+export async function requestAirdrop(
+  receiver_public_key: string,
+  amount: number
+) {
   try {
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
     const publicKey = new PublicKey(receiver_public_key);
@@ -76,7 +80,7 @@ export const getEthBalance = async (payload) => {
       status: 500,
     });
   }
-}
+};
 
 export const getSolanaBalance = async (payload) => {
   try {
@@ -89,4 +93,4 @@ export const getSolanaBalance = async (payload) => {
       status: 500,
     });
   }
-}
+};

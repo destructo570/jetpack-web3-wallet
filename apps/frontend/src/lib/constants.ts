@@ -1,3 +1,6 @@
+export const BACKEND_URL_DEV = "http://localhost:3001";
+export const BACKEND_URL_PROD = "https://jetpack-web3-wallet-backend.onrender.com";
+
 export const NETWORK = {
   SOLANA: "SOLANA",
   ETHEREUM: "ETHEREUM",
