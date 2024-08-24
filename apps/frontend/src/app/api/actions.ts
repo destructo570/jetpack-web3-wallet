@@ -16,11 +16,16 @@ import bs58 from "bs58";
 
 const BASE_URL = inDevEnvironment ? BACKEND_URL_DEV : BACKEND_URL_PROD;
 
+interface GetBalancePayload {
+  public_key: string,
+  network_type?: string
+}
+
 export async function sendSolanaToken(
   sender_private_key: string,
   receiver_public_key: string,
   amount: number
-): Promise<string> {
+): Promise<string | undefined> {
   try {
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
     const senderPrivateKey = bs58.decode(sender_private_key);
@@ -37,9 +42,9 @@ export async function sendSolanaToken(
       senderKeypair,
     ]);
     return signature;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Transaction failed:", error);
-    renderErrorToast("Transaction failed", error?.message);
+    renderErrorToast("Transaction failed", error?.toString()!);
   }
 }
 
@@ -65,11 +70,11 @@ export async function requestAirdrop(
     );
   } catch (error) {
     console.error("Transaction failed:", error);
-    renderErrorToast("Transaction failed", error?.message);
+    renderErrorToast("Transaction failed", error?.toString()!);
   }
 }
 
-export const getEthBalance = async (payload) => {
+export const getEthBalance = async (payload: GetBalancePayload) => {
   try {
     let url = `${BASE_URL}/wallet/get-eth-balance`;
 
@@ -82,7 +87,7 @@ export const getEthBalance = async (payload) => {
   }
 };
 
-export const getSolanaBalance = async (payload) => {
+export const getSolanaBalance = async (payload: GetBalancePayload) => {
   try {
     let url = `${BASE_URL}/wallet/get-sol-balance`;
 

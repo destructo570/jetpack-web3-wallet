@@ -1,4 +1,6 @@
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { Wallet } from "./Wallet";
+import { formatUnits } from "ethers";
 
 export class JetPackWallet {
   wallet_name: string;
@@ -43,5 +45,14 @@ export class JetPackWallet {
 
   getEthereumWalletPrivateKey(seed: string) {
     return this.ethereum_wallet.getPrivateKeyFromSeed(seed);
+  }
+
+  
+  static convertLamportsToSol(value: string | number | bigint){
+    return BigInt(value) / BigInt(LAMPORTS_PER_SOL);
+  }
+
+  static convertHexToEth(value: string | number | bigint){
+    return BigInt(formatUnits(BigInt(value || 0).toString()));
   }
 }

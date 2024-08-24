@@ -16,9 +16,7 @@ import CollectiblesSection from "./CollectiblesSection";
 import RecentActivitySection from "./RecentActivitySection";
 import { Settings } from "lucide-react";
 import { JetPackWallet } from "@/model/JetPackWallet";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import SkeletonLoader from "@/components/common/SkeletonLoader";
-import { formatUnits } from "ethers";
 import {
   Dialog,
   DialogContent,
@@ -29,12 +27,17 @@ import {
 import SettingsDialog from "@/components/Settings/SettingsDialog";
 import { getEthBalance, getSolanaBalance } from "../api/actions";
 
+interface WalletData{
+  sol_balance: bigint | number,
+  eth_balance: bigint | number,
+}
+
 export default function Component() {
   const [selected_wallet, setSelectedWallet] = useState<JetPackWallet>();
   const [wallets, setWallets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loading_eth, setLoadingEth] = useState(false);
-  const [wallet_data, setWalletData] = useState({
+  const [wallet_data, setWalletData] = useState<WalletData>({
     sol_balance: 0,
     eth_balance: 0,
   });
@@ -49,10 +52,13 @@ export default function Component() {
   const fetchWalletBalance = async () => {
     setLoading(true);
     let public_key = selected_wallet?.getSolanaWallet()?.getPublicKey();
+    
+    if(!public_key) return;
+    
     const res = await getSolanaBalance({ public_key, network_type: "devnet" });
     setWalletData((prev) => ({
       ...prev,
-      sol_balance: res?.data?.value / LAMPORTS_PER_SOL,
+      sol_balance: JetPackWallet.convertLamportsToSol(res?.data?.value),
     }));
     setLoading(false);
   };
@@ -60,10 +66,13 @@ export default function Component() {
   const fetchEthWalletBalance = async () => {
     setLoadingEth(true);
     let public_key = selected_wallet?.getEthereumWallet()?.getPublicKey();
+    
+    if(!public_key) return;
+
     const res = await getEthBalance({ public_key, network_type: "sepolia"  });
     setWalletData((prev) => ({
       ...prev,
-      eth_balance: formatUnits(BigInt(res?.data?.result || 0).toString()),
+      eth_balance: JetPackWallet.convertHexToEth(res?.data?.result),
     }));
     setLoadingEth(false);
   };
