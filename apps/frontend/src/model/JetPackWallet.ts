@@ -53,6 +53,6 @@ export class JetPackWallet {
   }
 
   static convertHexToEth(value: string | number | bigint){
-    return BigInt(formatUnits(BigInt(value || 0).toString()));
+    return formatUnits(BigInt(value || 0).toString());
   }
 }

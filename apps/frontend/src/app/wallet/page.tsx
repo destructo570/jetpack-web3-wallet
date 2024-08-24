@@ -28,8 +28,8 @@ import SettingsDialog from "@/components/Settings/SettingsDialog";
 import { getEthBalance, getSolanaBalance } from "../api/actions";
 
 interface WalletData{
-  sol_balance: bigint | number,
-  eth_balance: bigint | number,
+  sol_balance: bigint | number | string,
+  eth_balance: bigint | number | string,
 }
 
 export default function Component() {
