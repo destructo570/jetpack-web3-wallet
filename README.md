@@ -1,6 +1,8 @@
 ## Disclaimer
 This Web3 wallet app is provided "as-is" without any warranties or guarantees. I, as the developer, am not responsible for any financial losses or damages that may occur as a result of using this app. Use at your own risk, and always exercise caution when handling digital assets.
 
+## Initial requests might take time due to render putting the server to sleep due to inactivity
+
 # Turborepo starter
 
 This is an official starter Turborepo.
