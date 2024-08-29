@@ -31,8 +31,6 @@ const Airdrop = (props) => {
   };
 
   const onAmountChange = (e) => {
-    console.log(typeof  e?.target?.value);
-    
     setPayload((prev) => ({ ...prev, amount: e?.target?.value }));
   };
   const onRecepientChange = (e) => {
